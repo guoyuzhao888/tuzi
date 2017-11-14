@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="keywords" content="秃子先生">
+<meta name="description" content="秃子先生">
+<title>总后台登陆</title>
+<link rel="stylesheet" href="__STATIC__/layui/css/layui.css">
+<link rel="stylesheet" href="__STATIC__/login/css/sccl.css">
+<link href="__STATIC__/layui/css/layui.css" rel="stylesheet" media="all"/>
+</head>
+<body class="login-bg">
+  <!-- 主体窗口 -->
+  <div class="login-box">
+    <!-- 标题 -->
+    <header>
+        <h1>总后台登陆</h1>
+    </header>
+    <!-- 主体 -->
+    <div class="login-main">
+			<form id="login_form" action="" class="layui-form" method="post">  
+        <!-- 用户名 -->
+				<div class="layui-form-item">
+					<label class="login-icon">
+						<i class="layui-icon"></i>
+					</label>
+					<input type="text" name="user_name" lay-verify="userName" autocomplete="off" placeholder="这里输入登录名" class="layui-input">
+				</div>
+        <!-- 密码 -->
+				<div class="layui-form-item">
+					<label class="login-icon">
+						<i class="layui-icon"></i>
+					</label>
+					<input type="password" name="password" lay-verify="password" autocomplete="off" placeholder="这里输入密码" class="layui-input">
+				</div>
+        <!-- 验证码 -->
+        <div class="layui-form-item">
+            <label class="login-icon">
+                <i class="layui-icon"></i>
+            </label>
+            <input class="layui-input" lay-verify="captcha" autocomplete="off" style="width:130px;float:left" type="text"  name="captcha" class="layui-input wd6"/>
+            <img id="verify_img" style="width:120px;height:38px;display: inline-block;float:right;" src="{:captcha_src()}" alt="captcha" onclick="refresh();"/>
+        </div>
+        <!-- 登陆 -->
+				<div class="layui-form-item">
+					<div class="pull-right">
+						<span class="layui-btn layui-btn-primary submit" lay-submit="" lay-filter="login">
+							<i class="layui-icon"></i> 登录
+						</span>
+					</div>
+					<div class="clear"></div>
+				</div>
+			</form>        
+	  </div>
+    <!-- 尾部 -->
+    <footer style="margin-top: 50px;">
+        <p>2017 &copy; 秃子Sir</p>
+    </footer>
+  </div>
+  <!-- js引入 -->
+  <script src="__STATIC__/layui/layui.js"></script>
+  <script type="text/javascript" src="__STATIC__/base/js/jquery-1.9.0.min.js"></script>
+  <script type="text/javascript"  src="__STATIC__/base/js/myself.js"></script>
+</body>
+</html>
+<script>
+layui.use(['form', 'layedit', 'laydate'], function(){
+  var form = layui.form
+  ,layer = layui.layer
+  ,laydate = layui.laydate;
+});
+
+$(function(){
+    check_info();
+});
+
+//用于验证输入的信息是否正确
+function check_info(){
+    $('.submit').click(function(){
+        layer.load();
+        var data = $("#login_form").serialize();
+        var res = is_ok("{:url('/admin_login')}",data,'POST',false,'json',false);
+        result(res);
+    });
+}
+
+//用于处理返回过来的数据
+function result(data){
+  console.log(data);
+  switch(data)
+  {
+    case -1:
+      layer.msg('验证码错误，请重新输入',function(){
+        layer.closeAll();
+      });
+      refresh();
+      break;
+    case 0:
+      layer.msg('账号或者密码错误，请重新输入',function(){
+        layer.closeAll();
+      });
+      refresh();
+      break;
+    case 1:
+      location.href = "{:url('admin/index/index')}";//登陆成功跳转的后台主页面
+      break;
+    default:
+      layer.msg('网络错误',function(){
+        layer.closeAll();
+      });
+      refresh();
+      break;
+  }
+}
+
+//刷新验证码
+function refresh(){
+    var img = document.getElementById('verify_img');
+    img.src = '{:captcha_src()}';
+    return false;
+}
+</script>

@@ -17,9 +17,9 @@ return [
     // 应用命名空间
     'app_namespace'          => 'app',
     // 应用调试模式
-    'app_debug'              => false,
+    'app_debug'              => true,
     // 应用Trace
-    'app_trace'              => false,
+    'app_trace'              => true,
     // 应用模式状态
     'app_status'             => '',
     // 是否支持多模块
@@ -49,7 +49,7 @@ return [
     // 应用类库后缀
     'class_suffix'           => false,
     // 控制器类后缀
-    'controller_suffix'      => false,
+    'controller_suffix'      => true,
 
     // +----------------------------------------------------------------------
     // | 模块设置
@@ -93,7 +93,7 @@ return [
     // 路由使用完整匹配
     'route_complete_match'   => false,
     // 路由配置文件（支持配置多个）
-    'route_config_file'      => ['route'],
+    'route_config_file'      => ['route','admin'],
     // 是否强制使用路由
     'url_route_must'         => false,
     // 域名部署
@@ -237,5 +237,21 @@ return [
         'type'      => 'bootstrap',
         'var_page'  => 'page',
         'list_rows' => 15,
+    ],
+
+    //验证码设置
+    'captcha'  => [
+        // 字体大小
+        'fontSize' => 35,
+        // 验证码长度（位数）
+        'length'   => 3,
+    ],
+
+    //微信配置
+    'wechat'    => [
+        'debug'     => false,
+        'app_id'    => 'wxa0ee76262a58dbc9',//公众号appid
+        'token'     => 'tuzi',//公众号token
+        'secret'    => '655d77ee6b858b8fad06e2829f371f57',//公众号secret
     ],
 ];
