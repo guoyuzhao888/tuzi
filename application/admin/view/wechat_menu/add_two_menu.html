@@ -1,0 +1,138 @@
+{layout name="public/header" /}
+<div class="container">
+	<!-- 添加一级菜单的表单 -->
+	<form class="layui-form" action="">
+		<!-- 选择一级菜单的 -->
+		<div class="layui-form-item">
+			<div class="layui-inline">
+		      <label class="layui-form-label">父菜单:</label>
+		      <div class="layui-input-inline">
+		        <select name="wechat_menu_fid" lay-verify="required" lay-filter="one_menu_select" lay-search="">
+		        	{if isset($data.data)}
+						{volist name="data.data" id="value"}
+							{if condition="$value.two_menu_num < 5"}
+								<option value="{$value.wechat_menu_id}">{$value.wechat_menu_name}--{$value.two_menu_num}</option>
+							{/if}
+						{/volist}
+		        	{/if}
+		        </select>
+		      </div>
+		    </div>
+	    </div>
+		<!-- 菜单名称 -->
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">菜单名称:</label>
+				<div class="layui-input-inline">
+					<input type="tel" name="wechat_menu_name" lay-verify="required" autocomplete="off" class="layui-input">
+				</div>
+		    </div>
+		</div>
+		<!-- 事件类型 -->
+	    <div class="layui-form-item">
+			<label class="layui-form-label">单选框</label>
+			<div class="layui-input-block">
+				<input type="hidden" name="is_one_menu" value="1" />
+				<input type="radio" name="wechat_menu_type" lay-filter="check_click" class="common_dis wechat_menu_click" value="1" title="Click" checked="">
+				<input type="radio" name="wechat_menu_type" lay-filter="check_view" class="common_dis wechat_menu_key" value="2" title="View">
+			</div>
+		</div>
+		<!-- url -->
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">Url:</label>
+				<div class="layui-input-inline">
+					<input type="tel" name="wechat_menu_url" lay-verify="url" autocomplete="off" class="layui-input common_dis check_click">
+				</div>
+		    </div>
+		</div>
+		<!-- key -->
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">Key:</label>
+				<div class="layui-input-inline">
+					<input type="tel" name="wechat_menu_key" disabled="" lay-verify="key" autocomplete="off" class="layui-input check_view">
+				</div>
+		    </div>
+		</div>
+		<div class="layui-form-item">
+		    <div class="layui-input-block">
+		      <button class="layui-btn" lay-submit="" lay-filter="*">添加</button>
+		      <button type="reset" class="layui-btn layui-btn-primary reset">重置</button>
+		    </div>
+		 </div>
+	</form>
+</div>
+<script>
+layui.use('form', function(){
+  	var form = layui.form;
+  	//改为ajax提交
+  	form.on('submit(*)', function(data){
+	  var url = "{:url('admin/wechat_menu/save_menu')}";
+	  is_ok(url,data.field);
+	  return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+	});
+	//view
+	form.on('radio(check_view)', function(data){
+		if(this.checked){
+			$(".check_click").attr("disabled",true).val("");
+			$(".check_view").attr("disabled",false);
+		}
+		form.render();
+	});
+	//click
+	form.on('radio(check_click)', function(data){
+		if(this.checked){
+			$(".check_click").attr("disabled",false);
+			$(".check_view").attr("disabled",true).val("");
+		}
+		form.render();
+	});
+
+	//自定义验证规则
+	form.verify({
+		url: function(value){
+			if($(".wechat_menu_click").is(":checked")){
+				if(value == ""){
+					return "必填字段不能为空"
+				}
+			}
+		},
+		key: function(value){
+			if($(".wechat_menu_key").is(":checked")){
+				if(value == ""){
+					return "必填字段不能为空"
+				}
+			}
+		}
+	});
+});
+$(function(){
+	reset_form();
+});
+
+//添加成功后的处理
+//充值表单
+function reset_form(){
+	$(".reset").click(function(){
+		location.reload(true);
+	});
+}
+
+//异步请求处理
+function result(data){
+	if(data['code']){
+		layer.msg(data['msg'],function(){
+			quiet();
+		});
+	}else if(data['code'] == 0){
+		layer.msg(data['msg']);
+	}else{
+		layer.msg('网络异常');
+	}
+	reset_form();
+}
+function refresh(){
+	console.log(22);
+}
+</script>

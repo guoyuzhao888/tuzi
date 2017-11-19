@@ -83,7 +83,7 @@ function check_info(){
     $('.submit').click(function(){
         layer.load();
         var data = $("#login_form").serialize();
-        var res = is_ok("{:url('/admin_login')}",data,'POST',false,'json',false);
+        var res = is_ok("{:url('/admin_login')}",data,"result",'POST',false,'json',false);
         result(res);
     });
 }

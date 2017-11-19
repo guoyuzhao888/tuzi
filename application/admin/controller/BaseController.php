@@ -9,7 +9,7 @@ class BaseController extends Controller{
 	*/
 	public function _initialize(){
 		if(!Session::has('admin_id')){
-			$this->redirect('/group_login');
+			$this->redirect('/admin_login');
 		}
 	}
 }

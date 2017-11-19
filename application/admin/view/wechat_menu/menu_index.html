@@ -1,0 +1,213 @@
+{layout name="public/header" /}
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/css/wechat_menu.css">
+<div class="header">
+	<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+	  <legend>菜单列表</legend>
+	</fieldset>
+</div> 
+<div class="bodyer">
+	<div class="menu_table">
+		<div class="">
+			<button class="layui-btn layui-btn-radius add_one_menu">添加一级菜单</button>
+			<button class="layui-btn layui-btn-radius add_two_menu add_menu_button">添加二级菜单</button>
+			<button class="layui-btn layui-btn-radius test" onclick="refresh();">生成微信菜单</button>
+		</div>
+
+		<table class="layui-table" lay-data="{width: 1150, url:'/admin/wechat_menu/select_menus/', page:true, id:'idTest'}" lay-filter="demo">
+			<thead>
+			<tr>
+			  <th lay-data="{field:'wechat_menu_id', width:80}">菜单ID</th>
+			  <th lay-data="{field:'wechat_menu_name', width:100, toolbar: '#wechat_menu_name'}">菜单名称</th>
+			  <th lay-data="{field:'wechat_menu_type', width:100, toolbar: '#wechat_menu_type'}">菜单类型</th>
+			  <th lay-data="{field:'wechat_menu_url', width:177}">Url</th>
+			  <th lay-data="{field:'wechat_menu_key', width:177}">Key</th>
+			  <th lay-data="{field:'create_time', width:177}">创建时间</th>
+			  <th lay-data="{field:'update_time', width:177}">更新时间</th>
+			  <th lay-data="{field:'status', width:100, toolbar: '#menu_status'}">菜单状态</th>
+			  <th lay-data="{width:180, align:'center', toolbar: '#barDemo'}">操作</th>
+			</tr>
+			</thead>
+		</table>
+	</div>
+</div>
+<script type="text/html" id="menu_status">
+  <input type="checkbox" name="lock" value="{{d.wechat_menu_id}}" title="禁用" lay-filter="menu_status" {{ d.status == 0 ? 'checked' : '' }}>
+</script>
+<!-- 删除按钮 -->
+<script type="text/html" id="barDemo">
+	<a style="line-height: 1.8rem;" class="layui-btn layui-btn-danger layui-btn-xs del" lay-event="del">删除</a>
+</script>
+<!-- 微信菜单名称限制 -->
+<script type="text/html" id="wechat_menu_name">
+  {{#  if(d.wechat_menu_fid == 0){ }}
+    <span style="color:red;">{{d.wechat_menu_name}}</span>
+  {{#  } else { }}
+    {{d.wechat_menu_name}}
+  {{#  } }}
+</script>
+<!-- 微信菜单类型限制 -->
+<script type="text/html" id="wechat_menu_type">
+	{{#  if(d.wechat_menu_type == 0){ }}
+		一级菜单
+	{{# } else if(d.wechat_menu_type == 1){ }}
+		Click
+	{{# } else if(d.wechat_menu_type == 2){ }}
+		View
+	{{#  } else { }}
+		{{d.wechat_menu_name}}
+	{{#  } }}
+</script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+var com_table;
+var msg_config = {time:1000};
+layui.use(['table','form'], function(){
+  var table = layui.table;
+  var form 	= layui.form;
+  com_table = table;
+  //监听表格复选框选择
+  table.on('checkbox(demo)', function(obj){
+    
+  });
+  //监听工具条
+  table.on('tool(demo)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'detail'){
+      layer.msg('ID：'+ data.id + ' 的查看操作');
+    }else if(obj.event === 'del'){
+      layer.confirm('真的删除行么', function(index){
+        var del_res = del_menu(data);
+        switch(del_res['code']){
+        	case 1:
+        		obj.del();	
+        		layer.msg(del_res['msg'],msg_config,function(){
+        			layer.closeAll();
+        		});
+        		layer.close(index);
+        		break;
+        	case 2:
+        		layer.msg(del_res['msg'],msg_config,function(){
+        			layer.closeAll();
+        		});
+        		break;
+        	case 0:
+        		layer.msg(del_res['msg'],msg_config,function(){
+        			layer.closeAll();
+        		});
+        		break;
+        	default:
+        		layer.msg("网络错误",msg_config,function(){
+        			layer.closeAll();
+        		});
+        }
+        
+      });
+    } else if(obj.event === 'edit'){
+      layer.alert('编辑行：<br>'+ JSON.stringify(data))
+    }
+  });
+  
+  var $ = layui.$, active = {
+    getCheckData: function(){ //获取选中数据
+      var checkStatus = table.checkStatus('idTest')
+      ,data = checkStatus.data;
+      layer.alert(JSON.stringify(data));
+    }
+    ,getCheckLength: function(){ //获取选中数目
+      var checkStatus = table.checkStatus('idTest')
+      ,data = checkStatus.data;
+      layer.msg('选中了：'+ data.length + ' 个');
+    }
+    ,isAll: function(){ //验证是否全选
+      var checkStatus = table.checkStatus('idTest');
+      layer.msg(checkStatus.isAll ? '全选': '未全选')
+    }
+  };
+  
+  $('.demoTable .layui-btn').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+
+  //监听锁定操作
+  form.on('checkbox(menu_status)', function(obj){
+    var status;
+    this.value;
+    var url = "{:url('admin/wechat_menu/edit_status')}";
+    console.log(obj.elem.checked);
+    if(obj.elem.checked == true){
+    	status = 0;
+    }else{
+    	status = 1;
+    }
+    var data = {wechat_menu_id:this.value,status:status};
+    is_ok(url,data,null);
+    refresh();
+    layer.closeAll();
+  });
+});
+var area = ['40%','70%'];
+$(function(){
+	add_menu();
+});
+//删除菜单
+function del_menu(data){
+	var menu_data = {
+		wechat_menu_id:data['wechat_menu_id'],
+		wechat_menu_fid:data['wechat_menu_fid'],
+		wechat_menu_type:data['wechat_menu_type']
+	}
+	var url = "{:url('admin/wechat_menu/del_menu')}";
+	return is_ok(url,menu_data,null,"POST",false);
+}
+//添加菜单
+function add_menu(){
+	$(".add_one_menu").click(function(){
+		var count_url = "{:url('admin/wechat_menu/count_one_menu')}";
+		is_ok(count_url,'',"check_one_menu");
+	});
+	$(".add_two_menu").click(function(){
+		var count_url = "{:url('admin/wechat_menu/is_has_one_menu')}";
+		is_ok(count_url,'',"is_has_one_menu");
+		layer.closeAll();
+	});
+}
+
+//是否有满足条件的一级菜单
+function is_has_one_menu(data){
+	if(data['code']  == 0){
+		layer.msg(data['msg'],msg_config,function(){
+			layer.closeAll();
+		});
+	}else{
+		var title = "添加二级菜单";
+		var url = "{:url('admin/wechat_menu/add_two_menu')}";
+		iframe_view(url,title,area);
+	}
+}
+
+//判断是否达到上限
+function check_one_menu(data){
+	if(data['code'] == 1){
+		var title = "添加一级菜单";
+		var url = "{:url('admin/wechat_menu/add_one_menu')}";
+		layer.closeAll();
+		iframe_view(url,title,area);
+	}else if(data['code'] == 0){
+		layer.msg(data['msg'],msg_config,function(){
+			layer.closeAll();
+		});
+	}else{
+		layer.msg("网络错误",msg_config,function(){
+			layer.closeAll();
+		});
+	}
+	return;
+}
+//刷新当前表格
+function refresh(){
+	com_table.reload("idTest", {
+		url: '/admin/wechat_menu/select_menus/'
+	});
+}
+</script>

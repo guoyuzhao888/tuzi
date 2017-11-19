@@ -1,0 +1,117 @@
+{layout name="public/header" /}
+<div class="container">
+	<!-- 添加一级菜单的表单 -->
+	<form class="layui-form" action="{:url('admin/wechat_menu/save_one_menu')}">
+		<!-- 此菜单下是否具有二级菜单 -->
+		<div class="layui-form-item">
+			<label class="layui-form-label">事件:</label>
+			<div class="layui-input-block">
+				<input type="checkbox" name="is_one_menu" lay-skin="switch" lay-filter="is_has_two_menu" lay-text="开|关">
+			</div>
+		</div>
+		<!-- 菜单名称 -->
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">菜单名称:</label>
+				<div class="layui-input-inline">
+					<input type="tel" name="wechat_menu_name" lay-verify="required" autocomplete="off" class="layui-input">
+				</div>
+		    </div>
+		</div>
+		<!-- 事件类型 -->
+	    <div class="layui-form-item">
+			<label class="layui-form-label">单选框</label>
+			<div class="layui-input-block">
+				<input type="radio" name="wechat_menu_type" disabled="" lay-filter="check_click" class="common_dis" value="1" title="Click" checked="">
+				<input type="radio" name="wechat_menu_type" disabled="" lay-filter="check_view" class="common_dis" value="2" title="View">
+			</div>
+		</div>
+		<!-- url -->
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">Url:</label>
+				<div class="layui-input-inline">
+					<input type="tel" name="wechat_menu_url" disabled="" lay-verify="" autocomplete="off" class="layui-input common_dis check_click">
+				</div>
+		    </div>
+		</div>
+		<!-- key -->
+		<div class="layui-form-item">
+			<div class="layui-inline">
+				<label class="layui-form-label">Key:</label>
+				<div class="layui-input-inline">
+					<input type="tel" name="wechat_menu_key" disabled="" lay-verify="" autocomplete="off" class="layui-input check_view">
+				</div>
+		    </div>
+		</div>
+		<div class="layui-form-item">
+		    <div class="layui-input-block">
+		      <button class="layui-btn" lay-submit="" lay-filter="*">添加</button>
+		      <button type="reset" class="layui-btn layui-btn-primary reset">重置</button>
+		    </div>
+		 </div>
+	</form>
+</div>
+<script>
+var call_back_name;
+layui.use('form', function(){
+  	var form = layui.form;
+  	//改为ajax提交
+  	form.on('submit(*)', function(data){
+	  var url = "{:url('admin/wechat_menu/save_menu')}";
+	  console.log(data.field);
+	  is_ok(url,data.field,"result");
+	  return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+	});
+  	//是否具有二级菜单
+	form.on('switch(is_has_two_menu)', function(data){
+		if(this.checked){
+			$(".common_dis").attr("disabled",false);
+		}else{
+			$(".common_dis").attr("disabled",true);
+		}
+		form.render();
+	});
+	//view
+	form.on('radio(check_view)', function(data){
+		if(this.checked){
+			$(".check_click").attr("disabled",true).val("");
+			$(".check_view").attr("disabled",false);
+		}
+		form.render();
+	});
+	//click
+	form.on('radio(check_click)', function(data){
+		if(this.checked){
+			$(".check_click").attr("disabled",false);
+			$(".check_view").attr("disabled",true).val("");
+		}
+		form.render();
+	});
+});
+
+$(function(){
+	reset_form();
+});
+//充值表单
+function reset_form(){
+	$(".reset").click(function(){
+		location.reload(true);
+	});
+}
+
+//异步请求处理
+function result(data){
+	if(data['code']){
+		layer.msg(data['msg'],function(){
+			location.reload();
+			quiet();
+		});
+	}else if(data['code'] == 0){
+		layer.msg(data['msg']);
+	}else{
+		layer.msg('网络异常');
+	}
+	reset_form();
+}
+</script>
