@@ -1,9 +1,9 @@
 <?php
-namespace app\common\logic;
+namespace app\base\logic;
 use think\Model;
 use think\Session;
 use think\captcha\Captcha;
-use app\common\model\AdminModel;
+use app\base\model\AdminModel;
 class LoginLogic extends Model
 {
 	private static $admin_model;

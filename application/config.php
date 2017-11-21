@@ -249,9 +249,15 @@ return [
 
     //微信配置
     'wechat'    => [
-        'debug'     => false,
-        'app_id'    => 'wxa0ee76262a58dbc9',//公众号appid
+        'debug'     => true,
+        'app_id'    => 'wx7c0fca9b482afe1f',//公众号appid
         'token'     => 'tuzi',//公众号token
-        'secret'    => '655d77ee6b858b8fad06e2829f371f57',//公众号secret
+        'secret'    => '5c6972d4e3cb0fbd806a9c14a55dd0fe',//公众号secret
+        'aes_key'   => 'GVF9pjdZN4cZE5oQv2mH6Bd3UUPzLKvCrfJAuSCP1Nr',
+        'log' => [
+            'level'      => 'debug',
+            'permission' => 0777,
+            'file'       => '../runtime/log/easywechat.log',
+        ],
     ],
 ];

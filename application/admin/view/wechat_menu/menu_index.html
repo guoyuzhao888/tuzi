@@ -10,7 +10,7 @@
 		<div class="">
 			<button class="layui-btn layui-btn-radius add_one_menu">添加一级菜单</button>
 			<button class="layui-btn layui-btn-radius add_two_menu add_menu_button">添加二级菜单</button>
-			<button class="layui-btn layui-btn-radius test" onclick="refresh();">生成微信菜单</button>
+			<button class="layui-btn layui-btn-radius ">生成微信菜单</button>
 		</div>
 
 		<table class="layui-table" lay-data="{width: 1150, url:'/admin/wechat_menu/select_menus/', page:true, id:'idTest'}" lay-filter="demo">
@@ -20,11 +20,11 @@
 			  <th lay-data="{field:'wechat_menu_name', width:100, toolbar: '#wechat_menu_name'}">菜单名称</th>
 			  <th lay-data="{field:'wechat_menu_type', width:100, toolbar: '#wechat_menu_type'}">菜单类型</th>
 			  <th lay-data="{field:'wechat_menu_url', width:177}">Url</th>
-			  <th lay-data="{field:'wechat_menu_key', width:177}">Key</th>
+			  <th lay-data="{field:'wechat_menu_key', width:100}">Key</th>
 			  <th lay-data="{field:'create_time', width:177}">创建时间</th>
 			  <th lay-data="{field:'update_time', width:177}">更新时间</th>
 			  <th lay-data="{field:'status', width:100, toolbar: '#menu_status'}">菜单状态</th>
-			  <th lay-data="{width:180, align:'center', toolbar: '#barDemo'}">操作</th>
+			  <th lay-data="{width:100, align:'center', toolbar: '#barDemo'}">操作</th>
 			</tr>
 			</thead>
 		</table>
@@ -209,5 +209,10 @@ function refresh(){
 	com_table.reload("idTest", {
 		url: '/admin/wechat_menu/select_menus/'
 	});
+}
+//生成菜单
+function generate_menu(){
+	var url = "{:url('admin/wechat_menu/generate_menu')}";
+	is_ok(url,null,"generate_menu_return");
 }
 </script>

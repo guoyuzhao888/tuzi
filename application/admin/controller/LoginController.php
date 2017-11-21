@@ -1,7 +1,7 @@
 <?php
 namespace app\admin\controller;
 use think\Controller;
-use app\common\service\LoginService;
+use app\base\service\LoginService;
 class LoginController extends Controller{
 	private static $login_service;
 	//用于实例化模型类

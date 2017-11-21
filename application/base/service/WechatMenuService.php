@@ -1,8 +1,8 @@
 <?php
-namespace app\common\service;
+namespace app\base\service;
 
 use think\Model;
-use app\common\logic\WechatMenuLogic;
+use app\base\logic\WechatMenuLogic;
 class WechatMenuService extends Model
 {
 	private static $wechat_menu_logic;
@@ -100,6 +100,12 @@ class WechatMenuService extends Model
 	//更改菜单状态
 	public function edit_status($data){
 		$res = self::$wechat_menu_logic -> edit_status($data);
+		return $res;
+	}
+
+	//生成菜单
+	public function generate_menu(){
+		$res = self::$wechat_menu_logic -> generate_menu();
 		return $res;
 	}
 }

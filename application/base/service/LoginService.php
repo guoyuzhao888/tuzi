@@ -1,8 +1,8 @@
 <?php
-namespace app\common\service;
+namespace app\base\service;
 
 use think\Model;
-use app\common\logic\LoginLogic;
+use app\base\logic\LoginLogic;
 class LoginService extends Model
 {
 	private static $login_logic;

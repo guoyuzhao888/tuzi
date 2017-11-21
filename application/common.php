@@ -10,4 +10,8 @@
 // +----------------------------------------------------------------------
 
 // 应用公共文件
-// 验证码检测
+use EasyWeChat\Foundation\Application;
+function app(){
+	$app = new Application(Config('wechat'));
+	return $app;
+}

@@ -1,7 +1,7 @@
 <?php
 namespace app\admin\controller;
 use app\admin\controller\BaseController;
-use app\common\service\WechatMenuService;
+use app\base\service\WechatMenuService;
 class WechatMenuController extends BaseController{
 
 	private static $wechat_menu_service;
@@ -74,6 +74,12 @@ class WechatMenuController extends BaseController{
 	public function edit_status(){
 		$data = input();
 		$res = self::$wechat_menu_service -> edit_status($data);
+		return json($res);
+	}
+
+	//生成菜单
+	public function generate_menu(){
+		$res = self::$wechat_menu_service -> generate_menu();
 		return json($res);
 	}
 }

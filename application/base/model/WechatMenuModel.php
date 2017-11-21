@@ -1,5 +1,5 @@
 <?php
-namespace app\common\Model;
+namespace app\base\Model;
 use think\Model;
 use traits\model\SoftDelete;
 class WechatMenuModel extends Model
